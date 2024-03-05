@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Price Predictor</title>
+</head>
+<body>
+    <h1>Home Price Predictor</h1>
+    
+    <form id="prediction-form">
+        <label for="median_income">Median Income:</label>
+        <input type="text" id="median_income" name="median_income" required><br><br>
+        
+        <label for="housing_median_age">Housing Median Age:</label>
+        <input type="text" id="housing_median_age" name="housing_median_age" required><br><br>
+        
+        <label for="total_rooms">Total Rooms:</label>
+        <input type="text" id="total_rooms" name="total_rooms" required><br><br>
+        
+        <label for="total_bedrooms">Total Bedrooms:</label>
+        <input type="text" id="total_bedrooms" name="total_bedrooms" required><br><br>
+        
+        <label for="population">Population:</label>
+        <input type="text" id="population" name="population" required><br><br>
+        
+        <label for="households">Households:</label>
+        <input type="text" id="households" name="households" required><br><br>
+        
+        <label for="median_house_value">Median House Value:</label>
+        <input type="text" id="median_house_value" name="median_house_value" required><br><br>
+        
+        <label for="ocean_proximity">Ocean Proximity:</label>
+        <select id="ocean_proximity" name="ocean_proximity" required>
+            <option value="NEAR BAY">Near Bay</option>
+            <option value="INLAND">Inland</option>
+            <option value="NEAR OCEAN">Near Ocean</option>
+            <option value="<1H OCEAN">&lt;1H Ocean</option>
+            <option value="ISLAND">Island</option>
+        </select><br><br>
+        
+        <button type="button" onclick="predict()">Predict</button>
+    </form>
+    
+    <div id="prediction-result" style="display: none;">
+        <h2>Prediction:</h2>
+        <p id="predicted-value"></p>
+    </div>
+
+    <script>
+        function predict() {
+            var form = document.getElementById('prediction-form');
+            var formData = new FormData(form);
+            
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                var resultDiv = document.getElementById('prediction-result');
+                var predictionOutput = document.getElementById('predicted-value');
+                
+                if (data.prediction) {
+                    predictionOutput.textContent = data.prediction.toFixed(2);
+                    resultDiv.style.display = 'block';
+                } else {
+                    resultDiv.style.display = 'none';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
